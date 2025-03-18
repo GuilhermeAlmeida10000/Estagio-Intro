@@ -5,11 +5,20 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     const password = document.getElementById('password').value;
     const errorMsg = document.getElementById('errorMsg');
 
-    // Usuário fixo para teste (posteriormente pode ser dinâmico)
-    const user = { username: 'admin', password: '1234' };
+    let users = JSON.parse(localStorage.getItem('users')) || []; // Carrega os usuários cadastrados
+    
+    // Adiciona usuário padrão se não existir
+    const defaultUser = { username: 'admin', password: 'admin' };
+    if (!users.some(user => user.username === defaultUser.username)) {
+        users.push(defaultUser);
+        localStorage.setItem('users', JSON.stringify(users));
+    }
 
-    if (username === user.username && password === user.password) {
-        window.location.href = 'views/dashboard.html'; // Redireciona após login bem-sucedido
+    // Verifica se o usuário e senha são válidos
+    const validUser = users.find(user => user.username === username && user.password === password);
+    
+    if (validUser) {
+        window.location.href = 'dashboard.html'; // Redireciona após login bem-sucedido
     } else {
         errorMsg.textContent = 'Usuário ou senha incorretos!';
     }
